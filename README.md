@@ -30,6 +30,9 @@ pip install -r requirements
 ```
 
 ## Usage
+Place any scripts you want to run in the *script_runner/scripts* directory.
+The logs when these scripts are run will get written to the *script_runner/logs* directory.
+
 Run the app in DEV mode with this command:
 ```
 python script_runner/app.py
