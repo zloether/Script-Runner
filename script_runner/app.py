@@ -17,15 +17,17 @@ import subprocess
 # -----------------------------------------------------------------------------
 # Variables
 # -----------------------------------------------------------------------------
-static_folder = 'static'
-app = Flask(__name__, static_folder=static_folder, static_url_path='')
+static_folder_name = 'static'
+app = Flask(__name__, static_folder=static_folder_name, static_url_path='')
 app_name = 'script_runner'
 logging_dir = '/var/log/'
 app_path = os.path.dirname(os.path.realpath(__file__))
 templates_folder = os.path.join(app_path, 'templates')
 index_md = os.path.join(templates_folder, 'index.md')
 support_script_types = ['.sh']
-script_dir = 'scripts'
+script_dir_name = 'scripts'
+script_dir = os.path.join(app_name, script_dir_name)
+static_folder = os.path.join(app_name, static_folder_name)
 
 
 
