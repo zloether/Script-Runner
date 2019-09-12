@@ -17,8 +17,8 @@ import subprocess
 # -----------------------------------------------------------------------------
 # Variables
 # -----------------------------------------------------------------------------
-static_folder_name = 'static'
-app = Flask(__name__, static_folder=static_folder_name, static_url_path='')
+static_dir_name = 'static'
+app = Flask(__name__, static_folder=static_dir_name, static_url_path='')
 app_name = 'script_runner'
 logging_dir = '/var/log/'
 app_path = os.path.dirname(os.path.realpath(__file__))
@@ -26,8 +26,10 @@ templates_folder = os.path.join(app_path, 'templates')
 index_md = os.path.join(templates_folder, 'index.md')
 support_script_types = ['.sh']
 script_dir_name = 'scripts'
+log_dir_name = 'logs'
 script_dir = os.path.join(app_name, script_dir_name)
-static_folder = os.path.join(app_name, static_folder_name)
+static_dir = os.path.join(app_name, static_dir_name)
+log_dir = os.path.join(app_name, log_dir_name)
 
 
 
@@ -172,7 +174,7 @@ def run_script(script_name):
     # make sure file extension is for supported script type
     file_name, file_ext = os.path.splitext(script)
     if file_ext == '.sh':
-        log_path = os.path.join(static_folder, script_name + '.log')
+        log_path = os.path.join(log_dir, script_name + '.log')
         command_string = 'bash ' + script + ' >> ' + log_path
         subprocess.call(command_string, shell=True)
         message = 'Script running: ' + script
@@ -186,7 +188,7 @@ def run_script(script_name):
 
 
 def read_file(file_name):
-    file_path = os.path.join(static_folder, file_name)
+    file_path = os.path.join(log_dir, file_name)
 
     # make sure script is legit
     if not os.path.isfile(file_path): # file is not found
