@@ -170,6 +170,28 @@ def list_files():
 
 
 
+@app.route("/log", methods=['GET'])
+def list_logs():
+    # get contents of log_dir
+    log_dir_contents = os.listdir(log_dir)
+
+    # initialize string of file names
+    log_files = ''
+
+    # loop through log_dir_contents to get just the files
+    for i in log_dir_contents:
+        # create path to files
+        full_path = os.path.join(log_dir, i)
+
+        # only get the items that are files (no directories)
+        if os.path.isfile(full_path):
+            link_path = url_for('read') + '?file=' + i
+            link = '<a href=' + link_path + '>' + i + '</a>'
+            log_files = log_files + link + '<br/>'
+    
+    return log_files
+
+
 
 # -----------------------------------------------------------------------------
 # Helpers
