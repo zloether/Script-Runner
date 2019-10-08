@@ -199,10 +199,12 @@ def run_script(script_name):
     # make sure file extension is for supported script type
     file_name, file_ext = os.path.splitext(script)
     if file_ext == '.sh':
-        log_path = os.path.join(log_dir, script_name + '.log')
+        log_name = script_name + '.log'
+        log_path = os.path.join(log_dir, log_name)
         command_string = 'bash ' + script + ' >> ' + log_path
         subprocess.call(command_string, shell=True)
-        message = 'Script running: ' + script
+        logs_link = url_for('read') + '?file=' + log_name
+        message = 'Script running: ' + script + '<br/><a href=' + logs_link + '>Script logs</a>'
         return make_response(message), message
     else:
         error_code = 403
