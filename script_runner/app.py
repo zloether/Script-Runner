@@ -3,9 +3,10 @@
 # -----------------------------------------------------------------------------
 # Imports
 # -----------------------------------------------------------------------------
-from flask import Flask, request, render_template, Markup, has_request_context, make_response
+from flask import Flask, request, render_template, Markup, has_request_context, make_response, url_for
 import markdown
 import os.path
+from os import listdir
 import logging
 from flask.logging import default_handler
 from logging.handlers import RotatingFileHandler
@@ -143,6 +144,30 @@ def read():
         else:
             resp, message = read_file(args['file'])
             return returnify(resp, message)
+
+
+
+@app.route("/list", methods=['GET'])
+def list_files():
+    # get contents of script_dir
+    script_dir_contents = os.listdir(script_dir)
+
+    # initialize string of file names
+    script_files = ''
+
+    # loop through script_dir_contents to get just the files
+    for i in script_dir_contents:
+        # create path to files
+        full_path = os.path.join(script_dir, i)
+
+        # only get the items that are files (no directories)
+        if os.path.isfile(full_path):
+            link_path = url_for('run') + '?script=' + i
+            link = '<a href=' + link_path + '>' + i + '</a>'
+            script_files = script_files + link + '<br/>'
+    
+    return script_files
+
 
 
 
