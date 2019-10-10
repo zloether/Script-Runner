@@ -14,3 +14,6 @@ Provide a log file as a parameter to read it
 ### /tail
 Provide a log file and an integer number to read the specified last number of lines (default = 10)
 /tail?file=filename&lines=10
+### /clear
+Clear the contents of a log file
+/clear?file=filename
