@@ -125,7 +125,7 @@ def run():
 def read():
     if not request.args:
         error_code = 401
-        error_message = 'Provide log file name as a parameter to run it /read?file=filename'
+        error_message = 'Provide log file name as a parameter to read it /read?file=filename'
         log_message = 'No parameters'
         resp = make_response(error_message, error_code)
 
@@ -133,9 +133,9 @@ def read():
 
     else: # there are parameters
         args = request.args
-        if not args['file']: # no 'file' parameter
+        if not 'file' in args: # no 'file' parameter
             error_code = 401
-            error_message = 'Provide log file name as a parameter to run it /read?file=filename'
+            error_message = 'Provide log file name as a parameter to read it /read?file=filename'
             log_message = 'No parameters'
             resp = make_response(error_message, error_code)
 
@@ -143,6 +143,36 @@ def read():
 
         else:
             resp, message = read_file(args['file'])
+            return returnify(resp, message)
+
+
+
+@app.route("/tail", methods=['GET'])
+def tail():
+    if not request.args:
+        error_code = 401
+        error_message = 'Provide log file name as a parameter to tail it /tail?file=filename&lines=10'
+        log_message = 'No parameters'
+        resp = make_response(error_message, error_code)
+
+        return returnify(resp, log_message)
+
+    else: # there are parameters
+        args = request.args
+        if not 'file' in args: # no 'file' parameter
+            error_code = 401
+            error_message = 'Provide log file name as a parameter to tail it /tail?file=filename&lines=10'
+            log_message = 'No parameters'
+            resp = make_response(error_message, error_code)
+
+            return returnify(resp, log_message)
+
+        else:
+            if 'lines' in args:
+                lines = int(args['lines'])
+            else:
+                lines = 10
+            resp, message = tail_file(args['file'], lines)
             return returnify(resp, message)
 
 
@@ -197,7 +227,7 @@ def list_logs():
 def clear():
     if not request.args:
         error_code = 401
-        error_message = 'Provide log file name as a parameter to run it /clear?file=filename'
+        error_message = 'Provide log file name as a parameter to clear it /clear?file=filename'
         log_message = 'No parameters'
         resp = make_response(error_message, error_code)
 
@@ -205,9 +235,9 @@ def clear():
 
     else: # there are parameters
         args = request.args
-        if not args['file']: # no 'file' parameter
+        if not 'file' in args: # no 'file' parameter
             error_code = 401
-            error_message = 'Provide log file name as a parameter to run it /clear?file=filename'
+            error_message = 'Provide log file name as a parameter to clear it /clear?file=filename'
             log_message = 'No parameters'
             resp = make_response(error_message, error_code)
 
@@ -278,6 +308,34 @@ def read_file(file_name):
         for line in lines:
             print(line)
             content = content + line + '<br/>'
+
+        log_message = 'Reading file ' + file_path
+        return make_response(content), log_message
+
+
+
+def tail_file(file_name, num_lines=10):
+    file_path = os.path.join(log_dir, file_name)
+
+    # make sure script is legit
+    if not os.path.isfile(file_path): # file is not found
+        error_code = 402
+        error_message = 'File name provided is invalid'
+        log_message = 'Invalid file name'
+        return make_response(error_message, error_code), log_message
+    
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+
+        content = ''
+        if len(lines) < num_lines:
+            index = 0
+        else:
+            index = len(lines) - num_lines
+
+        while index < len(lines):
+            content = content + lines[index] + '<br/>'
+            index += 1
 
         log_message = 'Reading file ' + file_path
         return make_response(content), log_message
